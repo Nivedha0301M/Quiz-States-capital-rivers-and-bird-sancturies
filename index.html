@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quiz</title>
+
+<style>
+body { font-family: Arial; margin: 20px; }
+.question { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 10px; }
+.option { display: block; margin: 5px 0; padding: 8px; border: 1px solid #aaa; cursor: pointer; border-radius: 5px; }
+.option:hover { background-color: #f0f0f0; }
+.correct { background-color: #c8f7c5; }
+.wrong { background-color: #f7c5c5; }
+#timer { font-size: 20px; font-weight: bold; }
+</style>
+</head>
+
+<body>
+
+<h2>Quiz</h2>
+<div id="timer">Time Left: 15:00</div>
+<br>
+
+<div id="quiz"></div>
+
+<br>
+<button onclick="submitQuiz()">Submit</button>
+
+<h3 id="result"></h3>
+
+<script>
+
+const questions = [
+
+{q:`The Kolleru Bird Sanctuary, known for its wetland ecosystem between major deltaic regions, is located in which state whose capital is Amaravati?`, options:["Telangana (TS)","Andhra Pradesh (AP)","Odisha (OD)","Tamil Nadu (TN)"], answer:1},
+
+{q:`Pulicat Lake Bird Sanctuary is shared by Andhra Pradesh and which neighboring state capitalized at Chennai?`, options:["Kerala (KL)","Karnataka (KA)","Tamil Nadu (TN)","Odisha (OD)"], answer:2},
+
+{q:`Manjira Bird Sanctuary is associated with which river system flowing through Telangana?`, options:["Godavari","Krishna","Musi","Pennar"], answer:0},
+
+{q:`Bordoibam-Bilmukh Bird Sanctuary lies in a state whose capital is Dispur. Which state is it?`, options:["Meghalaya (ML)","Assam (AS)","Arunachal Pradesh (AR)","Nagaland (NL)"], answer:1},
+
+{q:`The Kusheshwar Asthan Bird Sanctuary is located in a state primarily drained by which major river?`, options:["Brahmaputra","Ganga","Godavari","Narmada"], answer:1},
+
+{q:`Bareli Jheel Salim Ali Bird Sanctuary belongs to which capital region?`, options:["Ranchi","Patna","Lucknow","Raipur"], answer:2},
+
+{q:`The Okhla Bird Sanctuary is situated along which river forming boundary influence between Delhi and UP?`, options:["Yamuna","Ganga","Chambal","Gomti"], answer:0},
+
+{q:`Sandi Bird Sanctuary is located in a state whose capital is:`, options:["Jaipur","Lucknow","Dehradun","Bhopal"], answer:1},
+
+{q:`The Salim Ali Bird Sanctuary lies on an island ecosystem in which river?`, options:["Zuari","Mandovi","Tapti","Narmada"], answer:1},
+
+{q:`Nal Sarovar Bird Sanctuary is particularly famous for which migratory bird hotspot characteristic?`, options:["Pelican breeding","Flamingo congregation","Crane nesting","Eagle migration"], answer:1},
+
+{q:`Kutch Bustard Sanctuary is associated with conservation of which bird category?`, options:["Wetland ducks","Bustards","Flamingos","Pelicans"], answer:1},
+
+{q:`Sultanpur Bird Sanctuary lies in a state drained primarily by which river?`, options:["Yamuna","Sutlej","Beas","Ravi"], answer:0},
+
+{q:`Pong Dam Lake Bird Sanctuary is situated in a Himalayan state capitalized at:`, options:["Dehradun","Shimla","Srinagar","Gangtok"], answer:1},
+
+{q:`Udhuwa Lake Bird Sanctuary lies in a state drained by which combination?`, options:["Damodar–Ganga–Subarnarekha","Godavari–Krishna","Narmada–Tapti","Brahmaputra–Barak"], answer:0},
+
+{q:`Ranganathittu Bird Sanctuary is located on which major river?`, options:["Tungabhadra","Cauvery","Krishna","Pennar"], answer:1},
+
+{q:`Kokkare Bellur Community Reserve is famous for which birds?`, options:["Flamingo & Crane","Painted Stork & Pelican","Eagle & Kite","Duck & Goose"], answer:1},
+
+{q:`Gudavi Bird Sanctuary lies in a state whose capital is:`, options:["Chennai","Bengaluru","Hyderabad","Panaji"], answer:1},
+
+{q:`Kumarakom Bird Sanctuary lies along which river system?`, options:["Periyar","Pamba","Bharathapuzha","Chalakudy"], answer:1},
+
+{q:`Thattekad Bird Sanctuary is located in which capital region?`, options:["Kochi","Thiruvananthapuram","Kozhikode","Kannur"], answer:0},
+
+{q:`Ghatigaon Bustard Sanctuary is known for conservation of which bird?`, options:["Flamingo","Bustard","Pelican","Crane"], answer:1},
+
+{q:`Karera Bustard Sanctuary lies in a state drained by which major river?`, options:["Brahmaputra","Narmada","Godavari","Mahanadi"], answer:1},
+
+{q:`Karnala Bird Sanctuary is located in a state drained by which rivers?`, options:["Krishna–Godavari–Tapi","Ganga–Yamuna","Brahmaputra–Barak","Narmada–Tapti"], answer:3},
+
+{q:`Nandur Madhmeshwar Bird Sanctuary is often associated with which river basin?`, options:["Godavari","Krishna","Tapi","Chambal"], answer:0},
+
+{q:`Lengteng Wildlife Sanctuary lies in which capital region?`, options:["Imphal","Aizawl","Shillong","Kohima"], answer:1},
+
+{q:`Nalabana Bird Sanctuary is located within which lake ecosystem?`, options:["Sambhar Lake","Chilika Lake","Pulicat Lake","Loktak Lake"], answer:1},
+
+{q:`Keoladeo National Park (formerly Bharatpur Bird Sanctuary) is located in a state drained by which river?`, options:["Chambal","Luni","Sabarmati","Tapi"], answer:0},
+
+{q:`Tal Chhapar Sanctuary is known for which species group?`, options:["Bustards","Flamingos","Pelicans","Ducks"], answer:0},
+
+{q:`Vedanthangal Bird Sanctuary lies in a state drained by which major river?`, options:["Cauvery","Krishna","Godavari","Narmada"], answer:0},
+
+{q:`Point Calimere Bird Sanctuary lies along which coastal region?`, options:["Arabian Sea","Bay of Bengal","Gulf of Mannar","Both B and C"], answer:3},
+
+{q:`Kulik Bird Sanctuary is located in a state drained by which rivers?`, options:["Ganga–Damodar–Mahananda","Krishna–Godavari","Brahmaputra–Barak","Narmada–Tapti"], answer:0},
+
+{q:`Which state capital is correctly matched with a bird sanctuary?`, options:["Bengaluru – Nal Sarovar","Gandhinagar – Khijadiya","Chennai – Sultanpur","Jaipur – Kumarakom"], answer:1},
+
+{q:`Which sanctuary–state pair is INCORRECT?`, options:["Sultanpur – Haryana","Attiveri – Karnataka","Nal Sarovar – Rajasthan","Kumarakom – Kerala"], answer:2},
+
+{q:`Which river flows through the state hosting Attiveri Bird Sanctuary?`, options:["Cauvery","Tungabhadra","Pennar","All of the above"], answer:3},
+
+{q:`The state with capital Lucknow hosts which sanctuary?`, options:["Nal Sarovar","Okhla","Sultanpur","Thattekad"], answer:2},
+
+{q:`Which combination is correctly matched?`, options:["Gujarat – Sabarmati – Nal Sarovar","Kerala – Godavari – Kumarakom","Karnataka – Yamuna – Ranganathittu","Bihar – Krishna – Kusheshwar"], answer:0},
+
+{q:`Which state is NOT associated with bustard conservation?`, options:["Gujarat","Rajasthan","Madhya Pradesh","Kerala"], answer:3},
+
+{q:`Which sanctuary lies in a deltaic wetland ecosystem?`, options:["Kolleru","Tal Chhapar","Karera","Bandli"], answer:0},
+
+{q:`Which capital–river pair is correct?`, options:["Patna – Yamuna","Chennai – Cauvery","Gandhinagar – Brahmaputra","Mumbai – Ganga"], answer:1},
+
+{q:`Which UT has Yamuna as a major river?`, options:["Chandigarh","Delhi (NCT)","Puducherry","Ladakh"], answer:1},
+
+{q:`Which state–capital–river combination is correct?`, options:["Karnataka – Bengaluru – Cauvery","Kerala – Kochi – Pamba","Gujarat – Ahmedabad – Narmada","Odisha – Cuttack – Mahanadi"], answer:0},
+];
+
+// =======================
+// QUIZ LOGIC
+// =======================
+
+let score = 0;
+let answered = new Array(questions.length).fill(false);
+
+function loadQuiz() {
+    const quizDiv = document.getElementById("quiz");
+
+    questions.forEach((item, index) => {
+        const qDiv = document.createElement("div");
+        qDiv.classList.add("question");
+
+        qDiv.innerHTML = `<b>Q${index+1}. ${item.q}</b>`;
+
+        item.options.forEach((opt, i) => {
+            const optBtn = document.createElement("div");
+            optBtn.classList.add("option");
+            optBtn.innerText = opt;
+
+            optBtn.onclick = () => checkAnswer(index, i, optBtn, qDiv);
+
+            qDiv.appendChild(optBtn);
+        });
+
+        quizDiv.appendChild(qDiv);
+    });
+}
+
+function checkAnswer(qIndex, selected, element, qDiv) {
+
+    if (answered[qIndex]) return; // 🔒 Restriction
+
+    answered[qIndex] = true;
+
+    const correct = questions[qIndex].answer;
+    const options = qDiv.querySelectorAll(".option");
+
+    if (selected === correct) {
+        element.classList.add("correct");
+        element.innerHTML += " ✔ Correct";
+        score += 1;
+    } else {
+        element.classList.add("wrong");
+        element.innerHTML += " ❌ Wrong";
+        score -= 0.25;
+
+        // show correct answer
+        options[correct].classList.add("correct");
+        options[correct].innerHTML += " ✔ Correct Answer";
+    }
+
+    // disable all options
+    options.forEach(opt => opt.style.pointerEvents = "none");
+}
+
+let quizSubmitted = false;
+
+function submitQuiz() {
+    if (quizSubmitted) return;
+
+    quizSubmitted = true;
+    clearInterval(timer); // stop timer
+
+    document.getElementById("result").innerText =
+        "Final Score: " + score.toFixed(2);
+
+    // disable all options
+    document.querySelectorAll(".option").forEach(opt => {
+        opt.style.pointerEvents = "none";
+    });
+
+}
+
+// =======================
+// TIMER (20 mins)
+// =======================
+
+let time = 1200; // 20 min
+
+const timer = setInterval(() => {
+    let min = Math.floor(time / 60);
+    let sec = time % 60;
+
+    document.getElementById("timer").innerText =
+        `Time Left: ${min}:${sec < 10 ? '0'+sec : sec}`;
+
+    time--;
+
+    if (time <= 0) {
+        clearInterval(timer);
+        alert("Time's up! Auto submitting...");
+        submitQuiz();
+    }
+
+}, 1000);
+
+// =======================
+
+loadQuiz();
+
+</script>
+
+</body>
+</html>
